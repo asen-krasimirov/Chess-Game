@@ -10,11 +10,13 @@ class Pown(Piece):
     def legal_moves(self):
         moves = {}
         if self.side == 'Black':
-            moves['Down'] = [[self.position[0]+1, self.position[1]]]
+            moves['Down'] = [(self.position[0]+1, self.position[1])]
             if not self.moved_once:
-                moves['Down'].append([self.position[0]+2, self.position[1]])
+                moves['Down'].append((self.position[0]+2, self.position[1]))
+                self.moved_once = True
         else:
-            moves['Up'] = [[self.position[0]-1, self.position[1]]]
+            moves['Up'] = [(self.position[0]-1, self.position[1])]
             if not self.moved_once:
-                moves['Up'].append([self.position[0]-2, self.position[1]])
+                moves['Up'].append((self.position[0]-2, self.position[1]))
+                self.moved_once = True
         return moves

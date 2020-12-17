@@ -19,7 +19,7 @@ class Rook(Piece):
             if valid_index(new_row):
                 moves['Down'].append((new_row, new_column))
 
-        # going down
+        # going up
         for i in range(1, FIELD_SIZE + 1):
             new_row, new_column = self.position[0] - i, self.position[1]
             if valid_index(new_row):

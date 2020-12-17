@@ -22,7 +22,7 @@ class BoardTests(unittest.TestCase):
 6  . . . . . . . .
 7  WP . . . . . . .
 8  . . . . . . . .
-'''  # NOTE: going to be used split no it
+'''  # NOTE: going to be used split on it
         self.assertEqual(expected_result, result)
 
     def test_display_correct_possible_moves(self):
@@ -32,11 +32,28 @@ class BoardTests(unittest.TestCase):
         ]
         self.board.add_piece(pieces[0])
         self.board.add_piece(pieces[1])
-        result = self.board.possible_moves((2, 0))
+        result = self.board.possible_moves([2, 0])
         self.assertEqual({'Down': [(3, 0), (4, 0), (5, 0), (6, 0), (7, 0)], 'Up': 'No spots available.', 'Right': [(2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7)], 'Left': 'No spots available.'},
                          result, result)
-        result_two = self.board.possible_moves((1, 0))
+        result_two = self.board.possible_moves([1, 0])
         self.assertEqual({'Down': 'No spots available.'}, result_two, result_two)
+
+    def test_pieces_are_moved_correctly(self):
+        piece = Rook(2, 0, 'White')
+        self.board.add_piece(piece)
+        self.board.move_piece([2, 0], [2, 1])
+        result = self.board.return_board_for_print()
+        expected_result = '''   A B C D E F G H
+1  . . . . . . . .
+2  . . . . . . . .
+3  . WR . . . . . .
+4  . . . . . . . .
+5  . . . . . . . .
+6  . . . . . . . .
+7  . . . . . . . .
+8  . . . . . . . .
+'''
+        self.assertEqual(expected_result, result)
 
 
 if __name__ == '__main__':

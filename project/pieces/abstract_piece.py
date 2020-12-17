@@ -19,7 +19,7 @@ class Piece(ABC):
         self.position = new_row, new_column
 
     @abstractmethod
-    def legal_moves(self):
+    def legal_moves(self) -> dict:
         pass
     
     @property
