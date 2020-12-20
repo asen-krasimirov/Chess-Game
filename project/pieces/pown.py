@@ -7,7 +7,7 @@ class Pown(Piece):
         super().__init__(row, column, side)
 
     @property
-    def legal_moves(self):
+    def legal_moves(self):  # TODO: implement pown's different attacking
         moves = {}
         if self.side == 'Black':
             moves['Down'] = [(self.position[0]+1, self.position[1])]
