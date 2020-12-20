@@ -9,9 +9,7 @@ class Officer(Piece):
 
     @property
     def legal_moves(self):
-        moves = {'Down-Right': [], 'Down-Left': [], 'Up-Right': [], 'Up-Left': []}  # TODO: should change the naming (Down -> Down-Left)
-        if self.attacked_pieces:  # Add attacked_pieces later
-            pass
+        moves = {'Down-Right': [], 'Down-Left': [], 'Up-Right': [], 'Up-Left': []}
 
         # going down-right
         for i in range(1, FIELD_SIZE+1):

@@ -10,8 +10,6 @@ class Rook(Piece):
     @property
     def legal_moves(self):
         moves = {'Down': [], 'Up': [], 'Right': [], 'Left': []}
-        if self.attacked_pieces:  # Add attacked_pieces later
-            pass
 
         # going down
         for i in range(1, FIELD_SIZE+1):
@@ -33,7 +31,7 @@ class Rook(Piece):
 
         # going left
         for i in range(1, FIELD_SIZE + 1):
-            new_row, new_column = self.position[0], self.position[1] - 1
+            new_row, new_column = self.position[0], self.position[1] - i
             if valid_index(new_column):
                 moves['Left'].append((new_row, new_column))
 

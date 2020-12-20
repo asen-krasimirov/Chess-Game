@@ -16,9 +16,6 @@ class Horse(Piece):
             'right': [(-1, 2), (1, 2)],  # going right
             'left': [(-1, -2), (1, -2)]  # going left
         }
-        if self.attacked_pieces:  # Add attacked_pieces later
-            pass
-
         # going down
         for delta in allowed_moves['down']:
             new_row, new_column = self.position[0] + delta[0], self.position[1] + delta[1]

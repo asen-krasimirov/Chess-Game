@@ -5,7 +5,6 @@ from project.configs import FIELD_SIZE, valid_index, FREE_SPACE_SYMBOL
 
 class Board:
     _SIZE = FIELD_SIZE
-    # _LENGTH = 8
     __field = List[Union[str, Piece]]
 
     def __init__(self):
@@ -37,6 +36,7 @@ class Board:
     def possible_moves(self, coordinates: list) -> dict:
         piece = self.__find_piece_in_field(coordinates)
         all_moves = piece.legal_moves
+        pieces_attacked = []
         for direction in all_moves:
             available_positions = []
             for position in all_moves[direction]:
@@ -44,10 +44,13 @@ class Board:
                 if not valid_index(cur_row) or not valid_index(cur_column):
                     break
                 if self.__field[position[0]][position[1]] != FREE_SPACE_SYMBOL:
+                    pieces_attacked.append(position)
                     break
                 available_positions.append(position)
 
             all_moves[direction] = available_positions if available_positions else 'No spots available.'
+        pieces_attacked = [position for position in pieces_attacked if self.__field[position[0]][position[1]].side != self.__field[coordinates[0]][coordinates[1]].side]
+        all_moves['Attacking Pieces'] = pieces_attacked if pieces_attacked else 'Not attacking any piece.'
         return all_moves
 
     def move_piece(self, piece_coordinates: list, new_coordinates: list) -> Union[None, str]:
