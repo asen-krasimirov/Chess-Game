@@ -6,6 +6,7 @@ class King(Piece):
 
     def __init__(self, row: int, column: int, side: str):
         super().__init__(row, column, side)
+        self.is_captured = False
 
     @property
     def legal_moves(self):

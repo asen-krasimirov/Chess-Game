@@ -6,14 +6,14 @@ class Piece(ABC):
     @abstractmethod
     def __init__(self, row: int, column: int, side: str):
         self.position = row, column
-        self.is_captured = False
-        self.is_attacking = False
-        self.attacked_pieces = []
+        # self.is_captured = False
+        # self.is_attacking = False
+        # self.attacked_pieces = []
         self.side = side
         self.moved_once = False
 
-    def gather_attacked_pieces(self, pieces: list):
-        self.attacked_pieces = pieces
+    # def gather_attacked_pieces(self, pieces: list):
+    #     self.attacked_pieces = pieces
 
     def move_piece(self, new_row, new_column):
         self.position = new_row, new_column

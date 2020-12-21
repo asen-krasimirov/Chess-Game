@@ -1,7 +1,7 @@
 
 
 FIELD_SIZE = 8
-FREE_SPACE_SYMBOL = '.'
+FREE_SPACE_SYMBOL = 'OO'
 
 
 def valid_index(number, matrix_length=FIELD_SIZE):
