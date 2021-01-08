@@ -6,7 +6,7 @@ from project.piece_initialization import white_pieces, black_pieces
 
 def print_possible_moves(moves: dict):
     for name, positions in moves.items():
-        positions = ", ".join([f'{pos[1]}{pos[0]}' for pos in positions]) if not isinstance(positions, str) else positions
+        positions = ", ".join([f'{pos[0]}{pos[1]}' for pos in positions]) if not isinstance(positions, str) else positions
 
         print(f'{name} -> {positions}')
 
@@ -21,23 +21,30 @@ def available_piece(possible_coordinates: dict):
 def reprint_board():
     os.system('cls')
     print(board.return_board_for_print())
+    print()
 
 
 board = Board()
 
 [board.add_piece(piece) for piece in white_pieces]
 [board.add_piece(piece) for piece in black_pieces]
-print(board.return_board_for_print())
+reprint_board()
 
 turns = ["White's Turn", "Black's Turn"]
 i = 1
 while True:
+    # TODO: Go through all cells and set the attacked/not attacked states  (sort them by side)
+
     i += 1
     # White Turn
     print(turns[i % len(turns)])
     while True:
-        piece_coordinates = input('Select piece: ')  # coordinates
-        moving_positions = board.possible_moves(piece_coordinates)
+        try:
+            piece_coordinates = input('Select piece: ')  # coordinates
+            moving_positions = board.possible_moves(piece_coordinates)
+        except ValueError as exc:
+            print(str(exc) + '\n')
+            continue
         if not available_piece(moving_positions):
             print('Piece unavailable.\n')
             continue
@@ -45,8 +52,12 @@ while True:
         print_possible_moves(moving_positions)
 
         place_to_move = input('Select place to move to: ')  # coordinates
-        board.move_piece(piece_coordinates, place_to_move)
-        board.move_piece(piece_coordinates, place_to_move)
+        if place_to_move not in [item for elem in moving_positions.values() for item in elem]:
+            print('Position unreachable.\n')
+            continue
+
+        print(board.move_piece(piece_coordinates, place_to_move))
+        # board.move_piece(piece_coordinates, place_to_move)
         break
     reprint_board()
 
