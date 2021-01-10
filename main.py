@@ -24,6 +24,13 @@ def reprint_board():
     print()
 
 
+def alert_king_is_attacked(side):
+    if side:
+        print(f'{side} King is under attack. Defend the king.')
+    else:
+        print('NO king is attacked.')
+
+
 board = Board()
 
 [board.add_piece(piece) for piece in white_pieces]
@@ -33,20 +40,31 @@ reprint_board()
 turns = ["White's Turn", "Black's Turn"]
 i = 1
 while True:
-    # TODO: Go through all cells and set the attacked/not attacked states  (sort them by side)
+    board.make_every_attacked_cell_attacked()
+
+    attacked_king = None
+
+    if board.is_king_under_attack('White'):
+        attacked_king = 'White'
+
+    elif board.is_king_under_attack('Black'):
+        attacked_king = 'Black'
+
+    if attacked_king:
+        alert_king_is_attacked(attacked_king)
 
     i += 1
-    # White Turn
     print(turns[i % len(turns)])
     while True:
+        print()
         try:
             piece_coordinates = input('Select piece: ')  # coordinates
             moving_positions = board.possible_moves(piece_coordinates)
-        except ValueError as exc:
-            print(str(exc) + '\n')
+        except (ValueError, AttributeError) as exc:
+            print(str(exc))
             continue
         if not available_piece(moving_positions):
-            print('Piece unavailable.\n')
+            print('Piece unavailable.')
             continue
 
         print_possible_moves(moving_positions)
@@ -56,22 +74,14 @@ while True:
             print('Position unreachable.\n')
             continue
 
-        print(board.move_piece(piece_coordinates, place_to_move))
-        # board.move_piece(piece_coordinates, place_to_move)
+        board.move_piece(piece_coordinates, place_to_move)
+
+        board.make_every_attacked_cell_attacked()
+
+        if board.is_king_under_attack(attacked_king):
+            alert_king_is_attacked(attacked_king)
+            board.move_piece(place_to_move, piece_coordinates)
+            continue
+
         break
     reprint_board()
-
-    #
-    # # Black Turn
-    # print("Black's Turn")
-    # piece_coordinates = input('Select piece: ')  # coordinates
-    # moving_positions = board.possible_moves(piece_coordinates)
-    #
-    # print_possible_moves(moving_positions)
-    #
-    # place_to_move = input('Select place to move to: ')  # coordinates
-    #
-    # board.move_piece(piece_coordinates, place_to_move)
-    # board.move_piece(piece_coordinates, place_to_move)
-    #
-    # reprint_board()

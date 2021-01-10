@@ -30,8 +30,6 @@ black_pieces = [
     Pown(1, 1, 'Black'),
     Pown(1, 2, 'Black'),
     Pown(1, 3, 'Black'),
-    Pown(1, 4, 'Black'),
-    Pown(1, 5, 'Black'),
     Pown(1, 6, 'Black'),
     Pown(1, 7, 'Black'),
     Rook(0, 0, 'Black'),

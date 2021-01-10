@@ -11,8 +11,6 @@ class Board:
 
     def __init__(self):
         self.__field = [[Cell(row, col) for col in range(self._SIZE)] for row in range(self._SIZE)]
-        self.__white_king_position = WHITE_KING_STARTING_POSITION
-        self.__black_king_position = BLACK_KING_STARTING_POSITION
         self.__king_positions = {ALLOWED_COLORS[0]: WHITE_KING_STARTING_POSITION,
                                  ALLOWED_COLORS[1]: BLACK_KING_STARTING_POSITION}
 
@@ -41,6 +39,7 @@ class Board:
             board_information += f'{current_row}  ' + ' '.join(str(elem) for elem in row) + f'  {current_row}' + '\n'
             current_row += 1
         board_information += "   A  B  C  D  E  F  G  H"
+
         return board_information
 
     def add_piece(self, piece: Piece):
@@ -53,7 +52,7 @@ class Board:
 
     def __find_piece_in_field(self, coordinates: list):
         piece = self.__field[coordinates[0]][coordinates[1]]
-        if isinstance(piece, str):  # NOTE: change validation when doing a graphic version
+        if isinstance(piece, str):
             raise ValueError('No piece on this position.')
         return self.__field[coordinates[0]][coordinates[1]]
 
@@ -77,9 +76,12 @@ class Board:
         coordinates = self.__convert_coordinates(coordinates)  # converting from coordinates (A2 -> 0, 1)
 
         piece = self.__find_piece_in_field(coordinates)
-        # piece_type = piece.__class__.__name__
 
-        all_moves = piece.legal_moves
+        try:
+            all_moves = piece.legal_moves
+        except AttributeError:
+            raise ValueError("No piece at the given position.")
+
         pieces_attacked = []
         for direction in all_moves:
             available_positions = []
@@ -113,16 +115,20 @@ class Board:
                            self.__field[position[0]][position[1]].side != self.__field[coordinates[0]][
                                coordinates[1]].side]
         all_moves['Attacking Pieces'] = pieces_attacked if pieces_attacked else 'Not attacking any piece.'
+
         # converting to coordinates (0, 1 -> A2)
         for name, moves in all_moves.items():
             if not isinstance(moves, str):
-                # print([self.__reverse_convert_coordinates(move) for move in moves])
                 all_moves[name] = [self.__reverse_convert_coordinates(move) for move in moves]
         return all_moves
 
-    def __is_king_under_attack(self, king_side, coordinates):
-        # use king's position
-        pass
+    def is_king_under_attack(self, king_side):
+
+        if king_side == 'White':
+            return self.__king_positions['White'] in (piece.position for piece in self.__positions_attacked_by_black)
+
+        elif king_side == 'Black':
+            return self.__king_positions['Black'] in (piece.position for piece in self.__positions_attacked_by_white)
 
     def __set_attacking_states(self, piece: Piece):
         possible_positions = self.possible_moves(
@@ -143,8 +149,9 @@ class Board:
                 for position in possible_positions if
                 valid_index(position[0]) and valid_index(position[1])
 
-              ]
+            ]
 
+        piece.attacked_pieces = []
         for positions in possible_positions:
             for pos in positions:
                 if pos == 'N':
@@ -155,23 +162,42 @@ class Board:
     def move_piece(self, piece_coordinates: str, new_coordinates: str) -> Union[None, str]:
 
         piece_coordinates = self.__convert_coordinates(piece_coordinates)
-        # new_coordinates = self.__convert_coordinates(new_coordinates)
 
         try:
             piece = self.__find_piece_in_field(piece_coordinates)
             self.remove_piece(piece)
             new_coordinates = self.__convert_coordinates(new_coordinates)
-            piece.position = new_coordinates
-
-            # freeing the attacked cells
-            piece.attacked_pieces = []
+            piece.position = tuple(new_coordinates)
             self.add_piece(piece)
 
-            if piece.__class__.__name__ == 'King':  # add validation (is going in attacked cell) -> raise value error
-                self.__king_positions[piece.__class__.side] = new_coordinates
+            if piece.__class__.__name__ == 'King':
 
-            self.__set_attacking_states(piece)
+                self.__king_positions[piece.side] = tuple(new_coordinates)
+
+            if piece.__class__.__name__ == 'Pown':
+                if tuple(new_coordinates) == piece.starting_position:
+                    piece.moved_once = False
+                else:
+                    piece.moved_once = True
 
             return 'Successful Turn'
         except ValueError as exc:
             return str(exc)
+
+    def make_every_attacked_cell_attacked(self):
+        self.__positions_attacked_by_black = []
+        self.__positions_attacked_by_white = []
+
+        for row in self.__field:
+            for cell in row:
+                if cell.side != 'Neutral':
+                    self.__set_attacking_states(cell)
+                    if cell.side == 'Black':
+                        self.__positions_attacked_by_black.extend(
+                            cell.attacked_pieces
+                        )
+
+                    elif cell.side == 'White':
+                        self.__positions_attacked_by_white.extend(
+                            cell.attacked_pieces
+                        )

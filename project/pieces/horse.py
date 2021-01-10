@@ -1,5 +1,5 @@
 from project.pieces.abstract_piece import Piece
-from project.configs import FIELD_SIZE, valid_index
+from project.configs import valid_index
 
 
 class Horse(Piece):

@@ -22,7 +22,7 @@ class BoardTests(unittest.TestCase):
 6  . . . . . . . .
 7  WP . . . . . . .
 8  . . . . . . . .
-'''  # NOTE: going to be used split on it
+'''
         self.assertEqual(expected_result, result)
 
     def test_display_correct_possible_moves(self):
